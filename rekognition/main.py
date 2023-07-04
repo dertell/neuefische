@@ -35,8 +35,11 @@ def detect_labels(photo, bucket):
      return len(response['Labels'])
 
 def main():
-    bucket = sys.argv[1]
-    photo = sys.argv[2]
+    try:
+        bucket = sys.argv[1]
+        photo = sys.argv[2]
+    except IndexError:
+        sys.exit("usage: main.py <bucket name> <phote name>")
     label_count = detect_labels(photo, bucket)
     print("Labels detected: " + str(label_count))
 
