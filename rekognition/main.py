@@ -1,9 +1,10 @@
 import sys
 import boto3
+import os
 
 def detect_labels(photo, bucket):
 
-     session = boto3.Session(profile_name='account2')
+     session = boto3.Session(profile_name=os.environ.get("aws_profile"))
      client = session.client('rekognition')
 
      response = client.detect_labels(Image={'S3Object':{'Bucket':bucket,'Name':photo}},
