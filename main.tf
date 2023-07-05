@@ -17,7 +17,7 @@ resource "aws_instance" "deham6ec2"{
 resource "aws_s3_bucket" "dev" {
   bucket = "my-new-neuefische-terraform-bucket"
   object_lock_configuration {
-    object_lock_enabled = "Disabled"
+    object_lock_enabled = "Enabled"
   }
   tags = {
     Name        = "My bucket"
