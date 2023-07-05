@@ -82,6 +82,11 @@ target/
 # IPython
 profile_default/
 ipython_config.py
+.terraform.lock.hcl
+.terraform
+main.out
+terraform.tfstate
+
 
 # pyenv
 #   For a library or package, you might want to ignore these files since the code is

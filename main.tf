@@ -1,8 +1,8 @@
-
+/*
 provider "aws" {
   region = "us-west-2"
 }
-/*
+
 resource "aws_instance" "deham6ec2"{
     ami = "ami-02d8bad0a1da4b6fd"
     instance_type = "t2.micro"
@@ -12,13 +12,5 @@ resource "aws_instance" "deham6ec2"{
     tags = {
         Name = "deham6ec2-two"
     }
-}
-
-resource "aws_s3_bucket" "dev" {
-  bucket = "my-new-neuefische-terraform-bucket"
-  tags = {
-    Name        = "My bucket"
-    Environment = "Dev"
-  }
 }
 */
