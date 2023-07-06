@@ -13,7 +13,7 @@ resource "aws_instance" "deham6ec2"{
         Name = "deham6ec2-two"
     }
 }
-*/
+
 
 resource "aws_s3_bucket" "example" {
   bucket = "my-tf-test-bucket121511"
@@ -23,3 +23,4 @@ resource "aws_s3_bucket" "example" {
     Environment = "Dev"
   }
 }
+*/
