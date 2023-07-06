@@ -1,8 +1,8 @@
-/*
-provider "aws" {
-  region = "us-west-2"
-}
 
+provider "aws" {
+  region = "eu-central-1"
+}
+/*
 resource "aws_instance" "deham6ec2"{
     ami = "ami-02d8bad0a1da4b6fd"
     instance_type = "t2.micro"
@@ -14,3 +14,12 @@ resource "aws_instance" "deham6ec2"{
     }
 }
 */
+
+resource "aws_s3_bucket" "example" {
+  bucket = "my-tf-test-bucket121511"
+
+  tags = {
+    Name        = "My bucket"
+    Environment = "Dev"
+  }
+}
