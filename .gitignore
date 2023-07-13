@@ -51,6 +51,8 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 cover/
+allinstancedetails
+plan.json
 
 # Translations
 *.mo
@@ -86,7 +88,12 @@ ipython_config.py
 .terraform
 main.out
 terraform.tfstate
-
+# Local .terraform directories
+**/.terraform/*
+# .tfstate files
+*.tfstate
+*.tfstate.*
+*.terraform (
 
 # pyenv
 #   For a library or package, you might want to ignore these files since the code is
