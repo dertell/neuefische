@@ -15,7 +15,7 @@
         cidr_block                  = "10.0.1.0/24"
         vpc_id                      = aws_vpc.my_vpc.id
         map_public_ip_on_launch     = true
-        availability_zone           = data.aws_availability_zones.my_vpc_available.names[1]
+        availability_zone           = data.aws_availability_zones.my_vpc_available.names[0]
         tags = {
             Name = "public_subnet_1"
         }
@@ -24,7 +24,7 @@
         cidr_block                  = "10.0.2.0/24"
         vpc_id                      = aws_vpc.my_vpc.id
         map_public_ip_on_launch     = false
-        availability_zone           = data.aws_availability_zones.my_vpc_available.names[1]
+        availability_zone           = data.aws_availability_zones.my_vpc_available.names[0]
         tags = {
             Name = "private_subnet_1"
         }
@@ -33,7 +33,7 @@
         cidr_block                  = "10.0.3.0/24"
         vpc_id                      = aws_vpc.my_vpc.id
         map_public_ip_on_launch     = true
-        availability_zone           = data.aws_availability_zones.my_vpc_available.names[2]
+        availability_zone           = data.aws_availability_zones.my_vpc_available.names[1]
         tags = {
             Name = "public_subnet_2"
         }
@@ -42,7 +42,7 @@
         cidr_block                  = "10.0.4.0/24"
         vpc_id                      = aws_vpc.my_vpc.id
         map_public_ip_on_launch     = false
-        availability_zone           = data.aws_availability_zones.my_vpc_available.names[2]
+        availability_zone           = data.aws_availability_zones.my_vpc_available.names[1]
         tags = {
             Name = "private_subnet_2"
         }
@@ -95,6 +95,11 @@
     data "aws_ami" "amzLinux" {
         most_recent = true
         owners = ["amazon"]
+        
+        filter {
+            name   = "name"
+            values = ["al2023-ami-2023*"]
+            }
     }
     resource "aws_instance" "webserver" {
         ami                         = data.aws_ami.amzLinux.id

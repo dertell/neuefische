@@ -1,6 +1,7 @@
 #! /bin/bash
 sudo yum update -y
-sudo yum install -y httpd php mysql mysql-server
+sudo yum install -y httpd php mariadb105-server
+sudo yum install -y php-mysqli
 sudo service httpd start
 sudo chkconfig httpd on
 sudo chmod 777 /var/www
