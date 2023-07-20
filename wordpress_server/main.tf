@@ -68,6 +68,11 @@
         subnet_id                   = aws_subnet.public_subnet_1.id
         depends_on                  = [aws_route_table.public_route, aws_subnet.public_subnet_1]
     }
+    resource "aws_route_table_association" "public_subnet_2_association" {
+        route_table_id              = aws_route_table.public_route.id
+        subnet_id                   = aws_subnet.public_subnet_2.id
+        depends_on                  = [aws_route_table.public_route, aws_subnet.public_subnet_2]
+    }
     resource "aws_security_group" "my_vpc_sg_allow_http"{
         vpc_id                      = aws_vpc.my_vpc.id
         name                        = "my_vpc_allow_http"

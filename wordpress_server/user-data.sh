@@ -2,8 +2,8 @@
 sudo yum update -y
 sudo yum install -y httpd php mariadb105-server
 sudo yum install -y php-mysqli
-sudo service httpd start
-sudo chkconfig httpd on
+sudo systemctl enable httpd
+sudo systemctl start httpd
 sudo systemctl enable mariadb
 sudo systemctl start mariadb
 
