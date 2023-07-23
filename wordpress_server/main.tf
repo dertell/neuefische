@@ -1,5 +1,4 @@
-
-    provider "aws" {
+provider "aws" {
         region                      = var.region
     }
     data "aws_availability_zones" "my_vpc_available"{}
@@ -63,68 +62,32 @@
             Name = "my_vpc_public_route"
         }
     }
-
     resource "aws_route_table_association" "public_subnet_association" {
         route_table_id              = aws_route_table.public_route.id
         subnet_id                   = aws_subnet.public_subnet_1.id
         depends_on                  = [aws_route_table.public_route, aws_subnet.public_subnet_1]
     }
-
     resource "aws_route_table_association" "public_subnet_2_association" {
         route_table_id              = aws_route_table.public_route.id
         subnet_id                   = aws_subnet.public_subnet_2.id
         depends_on                  = [aws_route_table.public_route, aws_subnet.public_subnet_2]
     }
-
-    resource "aws_security_group" "my_vpc_sg_allow_http"{
-        vpc_id                      = aws_vpc.my_vpc.id
-        name                        = "my_vpc_allow_http"
-        tags = {
-            Name = "my_vpc_sg_allow_http"
-        }
-    }
-    resource "aws_security_group_rule" "http_ingress_access"{
-        from_port                   = 80
-        protocol                    = "tcp"
-        security_group_id           = aws_security_group.my_vpc_sg_allow_http.id
-        to_port                     = 80
-        type                        = "ingress"
-        cidr_blocks                 = [var.cidr_block]
-    }
-    resource "aws_security_group_rule" "https_egress_access"{
-        from_port                   = 443
-        protocol                    = "tcp"
-        security_group_id           = aws_security_group.my_vpc_sg_allow_http.id
-        to_port                     = 443
-        type                        = "egress"
-        cidr_blocks                 = [var.cidr_block]
-    }
-    data "aws_ami" "amzLinux" {
-        most_recent = true
-        owners = ["amazon"]
-        
-        filter {
-            name   = "name"
-            values = ["al2023-ami-2023*"]
-            }
-    }
-    locals {
-            DB      ="mydb"
-            User    ="alex"
-            PW      ="password123"
-    }
-    resource "aws_instance" "webserver" {
-        ami                         = data.aws_ami.amzLinux.id
-        instance_type               = "t2.micro"
-        key_name                    = "vockey"
-        vpc_security_group_ids      = [aws_security_group.my_vpc_sg_allow_http.id]
-        subnet_id                   = aws_subnet.public_subnet_1.id
-        user_data                   = templatefile("user-data.sh",{
-            DB      = local.DB
-            User    = local.User
-            PW      = local.PW
-        })
-        tags = {
-            Name    = "webserver"
-        }
-    }
+    #resource "aws_route_table" "private_route" {
+    #    vpc_id                      = aws_vpc.my_vpc.id
+    #    route{
+    #    cidr_block                  = var.cidr_block
+    #        }
+    #    tags = {
+    #        Name = "my_vpc_private_route"
+    #    }
+    #}
+    #resource "aws_route_table_association" "private_subnet_association" {
+    #    route_table_id              = aws_route_table.private_route.id
+    #    subnet_id                   = aws_subnet.private_subnet_1.id
+    #    depends_on                  = [aws_route_table.private_route, aws_subnet.private_subnet_1]
+    #}
+    #resource "aws_route_table_association" "private_subnet_2_association" {
+    #    route_table_id              = aws_route_table.private_route.id
+    #    subnet_id                   = aws_subnet.private_subnet_2.id
+    #    depends_on                  = [aws_route_table.private_route, aws_subnet.private_subnet_2]
+    #}
