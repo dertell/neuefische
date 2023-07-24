@@ -1,7 +1,7 @@
 resource "aws_ami_from_instance" "CPUtest-ami" {
-     name                        = "CPUtest-ami"
-      source_instance_id          = aws_instance.CPUtest.id
-      depends_on = [ aws_instance.CPUtest ]
+     name                           = "CPUtest-ami"
+      source_instance_id            = aws_instance.CPUtest.id
+      depends_on                    = [ aws_instance.CPUtest ]
   }
 resource "aws_launch_template" "launch-template" {
   name                              = "CPUtest-launch-template"
@@ -9,9 +9,9 @@ resource "aws_launch_template" "launch-template" {
   instance_type                     = "t2.micro"
   vpc_security_group_ids            = [data.aws_security_groups.my-sg.ids[0]]
   tag_specifications {
-        resource_type = "instance"
-        tags          = {
-            Name      = "autoCPUtest"
+        resource_type   = "instance"
+          tags          = {
+            Name        = "autoCPUtest"
    }
   }
 }
@@ -25,8 +25,8 @@ resource "aws_autoscaling_group" "auto-scaling-grp" {
   health_check_type                 = "ELB"
   health_check_grace_period         = 300
   launch_template {
-    id                = aws_launch_template.launch-template.id
-    version           = "$Latest"
+    id                  = aws_launch_template.launch-template.id
+    version             = "$Latest"
   }
 }
 resource "aws_autoscaling_policy" "policy" {
