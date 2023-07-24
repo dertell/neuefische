@@ -24,7 +24,6 @@ resource "aws_lb_listener" "listener" {
     target_group_arn                = aws_lb_target_group.target-group.arn
   }
 }
-
 resource "aws_lb_listener_rule" "wordpress-rule" {
   listener_arn = aws_lb_listener.listener.arn
   priority     = 100
@@ -43,6 +42,9 @@ resource "aws_lb_target_group" "target-group-wordpress" {
   port                              = 80
   protocol                          = "HTTP"
   vpc_id                            = aws_vpc.my_vpc.id
+  health_check {
+    path = "/wordpress/"
+  }
 }
 resource "aws_lb_target_group_attachment" "wordpress" {
   target_group_arn = aws_lb_target_group.target-group-wordpress.arn
