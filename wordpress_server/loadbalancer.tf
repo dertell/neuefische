@@ -8,20 +8,7 @@ resource "aws_lb" "load-balancer" {
     tags = {
         Environment                 = "production"
   }
-#    access_logs {
-#    bucket  = aws_s3_bucket.bucket_for_autologs.id
-#    prefix  = "test-lb"
-#    enabled = true
-#  }
 }
-#resource "aws_s3_bucket" "bucket_for_autologs" {
-#  bucket = "bucket-for-autologs"
-#
-#  tags = {
-#    Name        = "Autolog-bucket"
-#    Environment = "Dev"
-#  }
-#}
 resource "aws_lb_target_group" "target-group" {
   name                              = "CPUtest-tg"
   port                              = 80
@@ -36,32 +23,4 @@ resource "aws_lb_listener" "listener" {
     type                            = "forward"
     target_group_arn                = aws_lb_target_group.target-group.arn
   }
-}
-
-resource "aws_lb_listener_rule" "wordpress-rule" {
-  listener_arn = aws_lb_listener.listener.arn
-  priority     = 100
-  action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.target-group-wordpress.arn
-  }
-  condition {
-    path_pattern {
-      values = ["/wordpress/"]
-    }
-  }
-}
-resource "aws_lb_target_group" "target-group-wordpress" {
-  name                              = "webserver-tg"
-  port                              = 80
-  protocol                          = "HTTP"
-  vpc_id                            = aws_vpc.my_vpc.id
-  health_check {
-    path = "/wordpress/"
-  }
-}
-resource "aws_lb_target_group_attachment" "wordpress" {
-  target_group_arn = aws_lb_target_group.target-group-wordpress.arn
-  target_id        = aws_instance.webserver.id
-  port             = 80
 }
