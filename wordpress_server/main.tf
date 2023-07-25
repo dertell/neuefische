@@ -80,26 +80,22 @@ provider "aws" {
         subnet_id                   = aws_subnet.public_subnet_2.id
         depends_on                  = [aws_route_table.public_route, aws_subnet.public_subnet_2]
     }
-    #resource "aws_route_table" "private_route" {
-    #    vpc_id                      = aws_vpc.my_vpc.id
-    #    route{
-    #    destination_prefix_list_id = "com.amazonaws.us-west-2.s3"
-    #    vpc_endpoint_id             = aws_vpc_endpoint.s3.id
-    #       }
-    #    tags = {
-    #        Name = "my_vpc_private_route"
-    #    }
-    #}
-    #resource "aws_route_table_association" "private_subnet_association" {
-    #    route_table_id              = aws_route_table.private_route.id
-    #    subnet_id                   = aws_subnet.private_subnet_1.id
-    #    depends_on                  = [aws_route_table.private_route, aws_subnet.private_subnet_1, aws_vpc_endpoint.s3]
-    #}
-    #resource "aws_route_table_association" "private_subnet_2_association" {
-    #    route_table_id              = aws_route_table.private_route.id
-    #    subnet_id                   = aws_subnet.private_subnet_2.id
-    #    depends_on                  = [aws_route_table.private_route, aws_subnet.private_subnet_2, aws_vpc_endpoint.s3]
-    #}
+    resource "aws_route_table" "private_route" {
+        vpc_id                      = aws_vpc.my_vpc.id
+        tags = {
+            Name = "my_vpc_private_route"
+        }
+    }
+    resource "aws_route_table_association" "private_subnet_association" {
+        route_table_id              = aws_route_table.private_route.id
+        subnet_id                   = aws_subnet.private_subnet_1.id
+        depends_on                  = [aws_route_table.private_route, aws_subnet.private_subnet_1, aws_vpc_endpoint.s3]
+    }
+    resource "aws_route_table_association" "private_subnet_2_association" {
+        route_table_id              = aws_route_table.private_route.id
+        subnet_id                   = aws_subnet.private_subnet_2.id
+        depends_on                  = [aws_route_table.private_route, aws_subnet.private_subnet_2, aws_vpc_endpoint.s3]
+    }
     resource "aws_vpc_endpoint" "s3" {
         vpc_id       = aws_vpc.my_vpc.id
         service_name = "com.amazonaws.us-west-2.s3"
@@ -107,3 +103,7 @@ provider "aws" {
                 Namme = "S3_Endpoint"
             }
         }
+    resource "aws_vpc_endpoint_route_table_association" "example" {
+        route_table_id  = aws_route_table.private_route.id
+        vpc_endpoint_id = aws_vpc_endpoint.s3.id
+}
