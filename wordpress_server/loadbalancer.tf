@@ -8,20 +8,7 @@ resource "aws_lb" "load-balancer" {
     tags = {
         Environment                 = "production"
   }
-#    access_logs {
-#    bucket  = aws_s3_bucket.bucket_for_autologs.id
-#    prefix  = "test-lb"
-#    enabled = true
-#  }
 }
-#resource "aws_s3_bucket" "bucket_for_autologs" {
-#  bucket = "bucket-for-autologs"
-#
-#  tags = {
-#    Name        = "Autolog-bucket"
-#    Environment = "Dev"
-#  }
-#}
 resource "aws_lb_target_group" "target-group" {
   name                              = "CPUtest-tg"
   port                              = 80
