@@ -1,14 +1,4 @@
-terraform {
-    required_providers {
-        aws = {
-            source  = "hashicorp/aws"
-            version = "~> 4.0"
-        }
-    }
-}
-provider "aws" {
-        region                      = var.region
-    }
+
     data "aws_availability_zones" "my_vpc_available"{}
     resource "aws_vpc" "my_vpc" {
         cidr_block                  = "10.0.0.0/16"
