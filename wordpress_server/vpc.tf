@@ -91,8 +91,11 @@
             tags = {
                 Namme = "S3_Endpoint"
             }
+            provisioner "local-exec"{
+            command = "echo S3-endpoint ID=${self.id} >> metadata"
+            } 
         }
     resource "aws_vpc_endpoint_route_table_association" "example" {
         route_table_id  = aws_route_table.private_route.id
         vpc_endpoint_id = aws_vpc_endpoint.s3.id
-}
+    }
