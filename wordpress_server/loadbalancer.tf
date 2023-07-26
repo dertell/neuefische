@@ -9,13 +9,14 @@ resource "aws_lb" "load-balancer" {
         Environment                 = "production"
   }
   #    access_logs {
-#    bucket  = aws_s3_bucket.bucket_for_autologs.id
-#    prefix  = "test-lb"
-#    enabled = true
-#  }
+  #  bucket  = aws_s3_bucket.bucket_for_autologs.id
+   # prefix  = "test-lb"
+   # enabled = true
+ # }
 }
 #resource "aws_s3_bucket" "bucket_for_autologs" {
 #  bucket = "bucket-for-autologs"
+#  object_lock_enabled = false
 #
 #  tags = {
 #    Name        = "Autolog-bucket"
