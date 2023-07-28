@@ -1,10 +1,9 @@
 data "aws_ami" "amzLinux" {
     most_recent                 = true
-    owners                      = ["amazon"]
-    
+    owners                      = ["amazon"]    
     filter {
         name    = "name"
-        values  = ["al2023-ami-2023*"]
+        values  = ["al2023-ami-2023*x86_64"]
         }
 }
     locals {
@@ -16,7 +15,7 @@ resource "aws_instance" "webserver" {
     ami                         = data.aws_ami.amzLinux.id
     instance_type               = "t2.micro"
     key_name                    = "vockey"
-    vpc_security_group_ids      = [aws_security_group.my_vpc_sg_allow_http.id]
+    vpc_security_group_ids      = [aws_security_group.wordpress-sg.id]
     subnet_id                   = aws_subnet.public_subnet_1.id
     user_data                   = templatefile("user-data.sh",{
         DB      = local.DB
@@ -24,17 +23,16 @@ resource "aws_instance" "webserver" {
         PW      = local.PW
     })
     tags = {
-        Name    = "webserver"
+        Name    = "wp-webserver"
     }
 }
-resource "aws_instance" "CPUtest" {
+resource "aws_instance" "bastion-host" {
     ami                         = data.aws_ami.amzLinux.id
     instance_type               = "t2.micro"
     key_name                    = "vockey"
-    vpc_security_group_ids      = [aws_security_group.my_vpc_sg_allow_http.id]
+    vpc_security_group_ids      = [aws_security_group.bastion-sg.id]
     subnet_id                   = aws_subnet.public_subnet_1.id
-    user_data                   = templatefile("CPUtest.sh",{})
     tags = {
-        Name    = "CPUtest"
+        Name    = "Bastion"
     }
 }
