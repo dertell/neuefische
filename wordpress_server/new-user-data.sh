@@ -1,16 +1,9 @@
 #! /bin/bash
 sudo yum update -y
-sudo yum install -y httpd php mariadb105-server
+sudo yum install -y httpd php 
 sudo yum install -y php-mysqli
 sudo systemctl enable httpd
 sudo systemctl start httpd
-sudo systemctl enable mariadb
-sudo systemctl start mariadb
-
-sudo mysql -e "CREATE DATABASE ${DB} /*\!40100 DEFAULT CHARACTER SET utf8 */;"
-sudo mysql -e "CREATE USER ${User}@localhost IDENTIFIED BY '${PW}';"
-sudo mysql -e "GRANT ALL PRIVILEGES ON ${DB}.* TO '${User}'@'localhost';"
-sudo mysql -e "FLUSH PRIVILEGES;"
 
 curl -LO https://wordpress.org/latest.zip
 sudo mv latest.zip /var/www/html

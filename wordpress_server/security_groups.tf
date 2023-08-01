@@ -7,14 +7,14 @@ resource "aws_security_group" "bastion-sg"{
     }
     resource "aws_vpc_security_group_ingress_rule" "bastion_ingress"{
         from_port                   = 22
-        ip_protocol                    = "tcp"
+        ip_protocol                 = "tcp"
         security_group_id           = aws_security_group.bastion-sg.id
         to_port                     = 22
         cidr_ipv4                   = var.cidr_block
     }
     resource "aws_vpc_security_group_egress_rule" "bastion_egress"{
         from_port                   = 0
-        ip_protocol                    = "all"
+        ip_protocol                 = "all"
         security_group_id           = aws_security_group.bastion-sg.id
         to_port                     = 0
         cidr_ipv4                   = var.cidr_block
@@ -28,21 +28,21 @@ resource "aws_security_group" "autoscaling-sg"{
     }
     resource "aws_vpc_security_group_ingress_rule" "autoscaling-ingress-http"{
         from_port                   = 80
-        ip_protocol                    = "tcp"
+        ip_protocol                 = "tcp"
         security_group_id           = aws_security_group.autoscaling-sg.id
         to_port                     = 80
         referenced_security_group_id=  aws_security_group.alb-sg.id
     }
     resource "aws_vpc_security_group_ingress_rule" "autoscaling-ingress-ssh"{
         from_port                   = 22
-        ip_protocol                    = "tcp"
+        ip_protocol                 = "tcp"
         security_group_id           = aws_security_group.autoscaling-sg.id
         to_port                     = 22
         referenced_security_group_id= aws_security_group.bastion-sg.id
     }
     resource "aws_vpc_security_group_egress_rule" "autoscaling-egress"{
         from_port                   = 0
-        ip_protocol                    = "all"
+        ip_protocol                 = "all"
         security_group_id           = aws_security_group.autoscaling-sg.id
         to_port                     = 65535
         cidr_ipv4                   = var.cidr_block
@@ -68,7 +68,7 @@ resource "aws_security_group" "alb-sg"{
         to_port                     = 80
         referenced_security_group_id = aws_security_group.autoscaling-sg.id
     }
-  resource "aws_security_group" "wordpress-sg"{
+resource "aws_security_group" "wordpress-sg"{
         vpc_id                      = aws_vpc.my_vpc.id
         name                        = "wordpress-sg"
         tags = {
@@ -88,4 +88,74 @@ resource "aws_security_group" "alb-sg"{
         security_group_id           = aws_security_group.wordpress-sg.id
         to_port                     = 80
         cidr_ipv4                   = var.cidr_block
+    }
+    resource "aws_vpc_security_group_egress_rule" "wordpress-sg-https-out"{
+        from_port                   = 443
+        ip_protocol                 = "tcp"
+        security_group_id           = aws_security_group.wordpress-sg.id
+        to_port                     = 443
+        cidr_ipv4                   = var.cidr_block
+    }
+    resource "aws_vpc_security_group_egress_rule" "wordpress-ec2-rds-egress"{
+        from_port                   = 3306
+        ip_protocol                 = "tcp"
+        security_group_id           = aws_security_group.wordpress-sg.id
+        to_port                     = 3306
+        referenced_security_group_id= aws_security_group.mysqldb-sg.id
+    }
+
+
+
+
+
+
+resource "aws_security_group" "mysqldb-sg"{
+        vpc_id                      = aws_vpc.my_vpc.id
+        name                        = "mysqldb-sg"
+        tags = {
+            Name = "mysqldb-sg"
+        }
+    }
+    resource "aws_vpc_security_group_ingress_rule" "mysqldb-ingress"{
+        from_port                   = 3306
+        ip_protocol                 = "tcp"
+        security_group_id           = aws_security_group.mysqldb-sg.id
+        to_port                     = 3306
+        referenced_security_group_id= aws_security_group.autoscaling-sg.id
+    }
+    resource "aws_vpc_security_group_ingress_rule" "mysqldb-wp-ingress"{
+        from_port                   = 3306
+        ip_protocol                 = "tcp"
+        security_group_id           = aws_security_group.mysqldb-sg.id
+        to_port                     = 3306
+        referenced_security_group_id= aws_security_group.wordpress-sg.id
+    }
+    resource "aws_vpc_security_group_ingress_rule" "mysqldb-bastion-ingress"{
+        from_port                   = 3306
+        ip_protocol                 = "tcp"
+        security_group_id           = aws_security_group.mysqldb-sg.id
+        to_port                     = 3306
+        referenced_security_group_id= aws_security_group.bastion-sg.id
+    }
+
+    resource "aws_vpc_security_group_egress_rule" "mysqldb-egress"{
+        from_port                   = 3306
+        ip_protocol                 = "tcp"
+        security_group_id           = aws_security_group.mysqldb-sg.id
+        to_port                     = 3306
+        referenced_security_group_id= aws_security_group.autoscaling-sg.id
+    }
+    resource "aws_vpc_security_group_egress_rule" "mysqldb-wp-egress"{
+        from_port                   = 3306
+        ip_protocol                 = "tcp"
+        security_group_id           = aws_security_group.mysqldb-sg.id
+        to_port                     = 3306
+        referenced_security_group_id= aws_security_group.wordpress-sg.id
+    }
+    resource "aws_vpc_security_group_egress_rule" "mysqldb-bastion-egress"{
+        from_port                   = 3306
+        ip_protocol                 = "tcp"
+        security_group_id           = aws_security_group.mysqldb-sg.id
+        to_port                     = 3306
+        referenced_security_group_id= aws_security_group.bastion-sg.id
     }
