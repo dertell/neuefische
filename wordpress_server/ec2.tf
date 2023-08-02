@@ -4,37 +4,24 @@ data "aws_ami" "amzLinux" {
     
     filter {
         name    = "name"
-        values  = ["al2023-ami-2023*"]
+        values  = ["al2023-ami-2023*x86_64"]
         }
 }
     locals {
         DB      ="mydb"
         User    ="alex"
         PW      ="password123"
+        host    =aws_db_instance.mysql-db.address
+
 }
-resource "aws_instance" "webserver" {
+
+resource "aws_instance" "bastion-host" {
     ami                         = data.aws_ami.amzLinux.id
     instance_type               = "t2.micro"
     key_name                    = "vockey"
-    vpc_security_group_ids      = [aws_security_group.my_vpc_sg_allow_http.id]
+    vpc_security_group_ids      = [aws_security_group.bastion-sg.id]
     subnet_id                   = aws_subnet.public_subnet_1.id
-    user_data                   = templatefile("user-data.sh",{
-        DB      = local.DB
-        User    = local.User
-        PW      = local.PW
-    })
     tags = {
-        Name    = "webserver"
-    }
-}
-resource "aws_instance" "CPUtest" {
-    ami                         = data.aws_ami.amzLinux.id
-    instance_type               = "t2.micro"
-    key_name                    = "vockey"
-    vpc_security_group_ids      = [aws_security_group.my_vpc_sg_allow_http.id]
-    subnet_id                   = aws_subnet.public_subnet_1.id
-    user_data                   = templatefile("CPUtest.sh",{})
-    tags = {
-        Name    = "CPUtest"
+        Name    = "Bastion"
     }
 }

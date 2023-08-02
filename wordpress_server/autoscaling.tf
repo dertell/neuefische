@@ -9,6 +9,7 @@ resource "aws_launch_template" "launch-template" {
         PW      = local.PW
         host    = local.host
     }))
+      depends_on = [ aws_db_instance.mysql-db ]
   tag_specifications {
         resource_type = "instance"
         tags          = {
