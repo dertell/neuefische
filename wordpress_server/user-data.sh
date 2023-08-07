@@ -22,5 +22,6 @@ sudo cp wp-config-sample.php wp-config.php
 sudo sed -i "s/database_name_here/${DB}/" wp-config.php
 sudo sed -i "s/username_here/${User}/" wp-config.php
 sudo sed -i "s/password_here/${PW}/" wp-config.php
+sudo sed -i "s/localhost/${host}/" wp-config.php
 
 sudo service httpd restart

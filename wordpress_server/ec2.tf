@@ -1,18 +1,16 @@
 data "aws_ami" "amzLinux" {
     most_recent                 = true
-    owners                      = ["amazon"]
-    
+    owners                      = ["amazon"]    
     filter {
         name    = "name"
         values  = ["al2023-ami-2023*x86_64"]
         }
 }
-    locals {
-        DB      ="mydb"
-        User    ="alex"
-        PW      ="password123"
-        host    =aws_db_instance.mysql-db.address
-
+locals {
+    DB      ="mydb"
+    User    ="alex"
+    PW      ="password123"
+    host    =aws_db_instance.mysql-db.address
 }
 
 resource "aws_instance" "bastion-host" {
@@ -24,4 +22,3 @@ resource "aws_instance" "bastion-host" {
     tags = {
         Name    = "Bastion"
     }
-}

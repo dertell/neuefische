@@ -12,12 +12,19 @@ resource "aws_security_group" "bastion-sg"{
         to_port                     = 22
         cidr_ipv4                   = var.cidr_block
     }
-    resource "aws_vpc_security_group_egress_rule" "bastion_egress"{
-        from_port                   = 0
+    resource "aws_vpc_security_group_egress_rule" "bastion_egress_auto"{
+        from_port                   = 22
         ip_protocol                 = "tcp"
         security_group_id           = aws_security_group.bastion-sg.id
-        to_port                     = 0
-        cidr_ipv4                   = var.cidr_block
+        to_port                     = 22
+        referenced_security_group_id= aws_security_group.autoscaling-sg.id
+    }
+    resource "aws_vpc_security_group_egress_rule" "bastion_egress_db"{
+        from_port                   = 3306
+        ip_protocol                 = "tcp"
+        security_group_id           = aws_security_group.bastion-sg.id
+        to_port                     = 3306
+        referenced_security_group_id= aws_security_group.mysqldb-sg.id
     }
 
 resource "aws_security_group" "autoscaling-sg"{
@@ -32,7 +39,7 @@ resource "aws_security_group" "autoscaling-sg"{
         ip_protocol                 = "tcp"
         security_group_id           = aws_security_group.autoscaling-sg.id
         to_port                     = 80
-        cidr_ipv4                   = var.cidr_block
+        referenced_security_group_id= aws_security_group.alb-sg.id
     }
     resource "aws_vpc_security_group_ingress_rule" "autoscaling-ingress-ssh"{
         from_port                   = 22
@@ -40,13 +47,6 @@ resource "aws_security_group" "autoscaling-sg"{
         security_group_id           = aws_security_group.autoscaling-sg.id
         to_port                     = 22
         referenced_security_group_id= aws_security_group.bastion-sg.id
-    }
-    resource "aws_vpc_security_group_ingress_rule" "autoscaling-ingress-mysql"{
-        from_port                   = 3306
-        ip_protocol                 = "tcp"
-        security_group_id           = aws_security_group.autoscaling-sg.id
-        to_port                     = 3306
-        referenced_security_group_id= aws_security_group.mysqldb-sg.id
     }
     resource "aws_vpc_security_group_egress_rule" "autoscaling-http-egress"{
         from_port                   = 0
@@ -69,8 +69,20 @@ resource "aws_security_group" "autoscaling-sg"{
         to_port                     = 443
         cidr_ipv4                   = var.cidr_block
     }
-
-
+    resource "aws_vpc_security_group_egress_rule" "autoscaling-mysql-egress"{
+        from_port                   = 3306
+        ip_protocol                 = "tcp"
+        security_group_id           = aws_security_group.autoscaling-sg.id
+        to_port                     = 3306
+        referenced_security_group_id= aws_security_group.mysqldb-sg.id
+    }
+    resource "aws_vpc_security_group_egress_rule" "autoscaling-https-egress"{
+        from_port                   = 443
+        ip_protocol                 = "tcp"
+        security_group_id           = aws_security_group.autoscaling-sg.id
+        to_port                     = 443
+        cidr_ipv4                   = var.cidr_block
+    }
 
 resource "aws_security_group" "alb-sg"{
         vpc_id                      = aws_vpc.my_vpc.id
@@ -116,21 +128,6 @@ resource "aws_security_group" "mysqldb-sg"{
         referenced_security_group_id= aws_security_group.autoscaling-sg.id
     }
     resource "aws_vpc_security_group_ingress_rule" "mysqldb-bastion-ingress"{
-        from_port                   = 3306
-        ip_protocol                 = "tcp"
-        security_group_id           = aws_security_group.mysqldb-sg.id
-        to_port                     = 3306
-        referenced_security_group_id= aws_security_group.bastion-sg.id
-    }
-
-    resource "aws_vpc_security_group_egress_rule" "mysqldb-egress"{
-        from_port                   = 3306
-        ip_protocol                 = "tcp"
-        security_group_id           = aws_security_group.mysqldb-sg.id
-        to_port                     = 3306
-        referenced_security_group_id= aws_security_group.autoscaling-sg.id
-    }
-    resource "aws_vpc_security_group_egress_rule" "mysqldb-bastion-egress"{
         from_port                   = 3306
         ip_protocol                 = "tcp"
         security_group_id           = aws_security_group.mysqldb-sg.id
