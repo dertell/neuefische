@@ -7,7 +7,7 @@ data "aws_ami" "amzLinux" {
         }
 }
 locals {
-    DB      ="mydb-wordpress"
+    DB      ="mydb"
     User    ="alex"
     PW      ="password123"
     host    =aws_db_instance.mysql-db.address
