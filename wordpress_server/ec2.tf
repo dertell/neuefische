@@ -12,6 +12,7 @@ locals {
     PW      ="password123"
     host    =aws_db_instance.mysql-db.address
 }
+
 resource "aws_instance" "bastion-host" {
     ami                         = data.aws_ami.amzLinux.id
     instance_type               = "t2.micro"
@@ -21,4 +22,3 @@ resource "aws_instance" "bastion-host" {
     tags = {
         Name    = "Bastion"
     }
-}

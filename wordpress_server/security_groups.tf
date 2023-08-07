@@ -26,6 +26,7 @@ resource "aws_security_group" "bastion-sg"{
         to_port                     = 3306
         referenced_security_group_id= aws_security_group.mysqldb-sg.id
     }
+
 resource "aws_security_group" "autoscaling-sg"{
         vpc_id                      = aws_vpc.my_vpc.id
         name                        = "autoscaling-sg"
@@ -68,6 +69,21 @@ resource "aws_security_group" "autoscaling-sg"{
         to_port                     = 443
         cidr_ipv4                   = var.cidr_block
     }
+    resource "aws_vpc_security_group_egress_rule" "autoscaling-mysql-egress"{
+        from_port                   = 3306
+        ip_protocol                 = "tcp"
+        security_group_id           = aws_security_group.autoscaling-sg.id
+        to_port                     = 3306
+        referenced_security_group_id= aws_security_group.mysqldb-sg.id
+    }
+    resource "aws_vpc_security_group_egress_rule" "autoscaling-https-egress"{
+        from_port                   = 443
+        ip_protocol                 = "tcp"
+        security_group_id           = aws_security_group.autoscaling-sg.id
+        to_port                     = 443
+        cidr_ipv4                   = var.cidr_block
+    }
+
 resource "aws_security_group" "alb-sg"{
         vpc_id                      = aws_vpc.my_vpc.id
         name                        = "alb-sg"
