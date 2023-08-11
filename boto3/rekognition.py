@@ -19,10 +19,11 @@ def get_objects(bucket):
         response = client.list_objects_v2(
             Bucket=bucket,
         )
-        files = [f['Key'] for f in response['Contents']]
-        return files
     except ClientError as e:
         logging.error(e)
+
+    files = [f['Key'] for f in response['Contents']]
+    return files
 
 
 def detect_labels(bucket, file):
