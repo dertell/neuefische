@@ -3,15 +3,17 @@ import logging
 import time
 from botocore.exceptions import ClientError
 
-#session = boto3.Session(profile_name="default")
-#s3 = session.client("s3", region_name="us-west-2")
-#
-#try:
-#    s3.create_bucket(Bucket="myfirstboto3bucket1222", CreateBucketConfiguration={'LocationConstraint': "us-west-2"})
-#except ClientError as e:
-#    logging.error(e)
+session = boto3.Session(profile_name="default")
+s3 = session.client("s3", region_name="us-west-2")
+bucket = boto3.resource("s3")
+
+try:
+    s3.create_bucket(Bucket="myfirstboto3bucket1222", CreateBucketConfiguration={'LocationConstraint': "us-west-2"})
+except ClientError as e:
+    logging.error(e)
 
 client = boto3.client('rds')
+
 name = 'mydb'
 pw = 'password123'
 user = 'Admin'
@@ -48,11 +50,11 @@ ec2 = boto3.resource('ec2')
 with open("wordpress_server/new-user-data.sh") as f:
     g = f.read()
 
-g = g.replace('{DB}', name)
-g = g.replace('{User}', user)
-g = g.replace('{PW}', pw)
-g = g.replace("{host}", endpoint)
-g = g.replace("$", "")
+b = [endpoint, name, user, pw, ""]
+a = ["{host}", "{DB}", "{User}", "{PW}", "$"]
+
+for i in range(len(a)):
+    g = g.replace(a[i], b[i])
 
 try:
     instance = ec2.create_instances(
