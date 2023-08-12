@@ -3,9 +3,10 @@ from botocore.exceptions import ClientError
 import logging
 
 session = boto3.Session(profile_name='default')
+bucketName = 'nf-rekognition-bucket'
+tableName = 'nf-rekognition-table'
 
 def main():
-    bucketName = 'nf-rekognition-bucket'
     listOfFiles = get_objects(bucketName)
 
     for file in listOfFiles:
@@ -49,7 +50,7 @@ def save_labels(fileName, labels):
     client = session.client('dynamodb')
     try:
         response = client.put_item(
-            TableName='nf-rekognition-table',
+            TableName= tableName,
             Item={
                 'Filename': {
                     'S':fileName

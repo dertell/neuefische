@@ -22,3 +22,4 @@ resource "aws_instance" "bastion-host" {
     tags = {
         Name    = "Bastion"
     }
+}
